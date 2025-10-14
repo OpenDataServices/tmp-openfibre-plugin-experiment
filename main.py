@@ -1,5 +1,5 @@
 import os
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QFileDialog
 from qgis.PyQt.QtGui import QIcon
 
 plugin_dir = os.path.dirname(__file__)
@@ -22,5 +22,10 @@ class BasemapLoaderPlugin:
         del self.action
         
     def run(self):
-        self.iface.messageBar().pushMessage('Hello from Plugin')
-        
+        filename_details = QFileDialog.getSaveFileName(None, "Select output file ","", '*.gpkg')
+        # catch cancel being pressed
+        if not filename_details[0]:
+            return
+        # Get new filenme
+        filename = filename_details[0] + ".gpkg"
+        self.iface.messageBar().pushMessage(filename)
