@@ -1,6 +1,8 @@
 import os
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
 from qgis.PyQt.QtGui import QIcon
+import shutil
+from qgis.core import QgsVectorLayer, QgsProject
 
 plugin_dir = os.path.dirname(__file__)
 
@@ -28,4 +30,24 @@ class BasemapLoaderPlugin:
             return
         # Get new filenme
         filename = filename_details[0] + ".gpkg"
-        self.iface.messageBar().pushMessage(filename)
+        # Copy template to desired location
+        shutil.copyfile(os.path.join(plugin_dir, "template.gpkg"), filename)
+        # Add vector Layers for it 
+        vector_layers = [
+            QgsVectorLayer(filename+"|layername=networks", "Networks",  "ogr"),
+            QgsVectorLayer(filename+"|layername=nodes", "Nodes",  "ogr"),
+            QgsVectorLayer(filename+"|layername=spans", "Spans",  "ogr"),
+            QgsVectorLayer(filename+"|layername=phases", "Phases",  "ogr"),
+            QgsVectorLayer(filename+"|layername=spans_networkProviders", "spans_networkProviders",  "ogr"),
+            QgsVectorLayer(filename+"|layername=phases_funders", "phases_funders",  "ogr"),
+            QgsVectorLayer(filename+"|layername=organisations", "organisations",  "ogr"),
+            QgsVectorLayer(filename+"|layername=nodes_networkProviders", "nodes_networkProviders",  "ogr"),
+            QgsVectorLayer(filename+"|layername=nodes_internationalConnections", "nodes_internationalConnections",  "ogr"),
+            QgsVectorLayer(filename+"|layername=links", "links",  "ogr"),
+            QgsVectorLayer(filename+"|layername=contracts_relatedPhases", "contracts_relatedPhases",  "ogr"),
+            QgsVectorLayer(filename+"|layername=contracts_documents", "contracts_documents",  "ogr"),
+            QgsVectorLayer(filename+"|layername=contracts", "contracts",  "ogr"),
+        ]
+        for vector_layer in vector_layers:
+            QgsProject.instance().addMapLayer(vector_layer)
+    
