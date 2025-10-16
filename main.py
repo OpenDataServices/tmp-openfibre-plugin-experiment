@@ -111,16 +111,46 @@ class BasemapLoaderPlugin:
         # Get new filenme
         filename = filename_details[0] + ".json"
         # Make JSON
-        out = {}
+        networks = {}
+        # Pass 1 - get all the networks
+        for k,v in QgsProject.instance().mapLayers().items():
+            #print("LAYER {}".format(k))
+            if isinstance(v, QgsVectorLayer) and k.startswith("Networks"):
+                # TODO find a better way of identifying layers
+                for f in v.getFeatures():
+                    networks[f.attribute("id")] = {
+                        "id": f.attribute("id"),
+                        "name": f.attribute("name") or "",
+                        # TODO add more fields here
+                        "nodes": [],
+                        "spans": []
+                    }
+        # Pass 2 - get all the rest
         for k,v in QgsProject.instance().mapLayers().items():
             if isinstance(v, QgsVectorLayer):
-                print("LAYER {}".format(k))
-                for f in v.getFeatures():
-                    print("FEATURE")
-                    for f_k, f_v in f.attributeMap().items():
-                        # TODO actually have to turn this into the right structures
-                        out[f_k] = str(f_v)
-                    # TODO save f.geometry().asJson() for nodes and spans too
+                if k.startswith("Nodes"):
+                    for f in v.getFeatures():
+                        network_id = f.attribute("network_id")
+                        if network_id and network_id in networks:
+                            networks[network_id]["nodes"].append({
+                                "id": f.attribute("nodes/0/id"),
+                                "name": f.attribute("nodes/0/name") or "",
+                                "location": json.loads(f.geometry().asJson())
+                            })
+                elif k.startswith("Spans"):
+                    for f in v.getFeatures():
+                        network_id = f.attribute("network_id_2")
+                        if network_id and network_id in networks:
+                            networks[network_id]["spans"].append({
+                                "id": f.attribute("spans/0/id"),
+                                "name": f.attribute("spans/0/name") or "",
+                                "route": json.loads(f.geometry().asJson())
+                            })
         # Save JSON
+        print(networks)
         with open(filename, "w") as fp:
-            json.dump(out, fp, indent=2)
+            json.dump(
+                { "networks": [v for v in networks.values()]}, 
+                fp, 
+                indent=2
+            )
