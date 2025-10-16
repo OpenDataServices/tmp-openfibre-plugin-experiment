@@ -3,7 +3,7 @@ import json
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
 from qgis.PyQt.QtGui import QIcon
 import shutil
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsVectorLayer, QgsProject, QgsEditorWidgetSetup
 
 plugin_dir = os.path.dirname(__file__)
 
@@ -45,6 +45,13 @@ class BasemapLoaderPlugin:
 
         nodes = QgsVectorLayer(filename+"|layername=nodes", "Nodes",  "ogr")
         QgsProject.instance().addMapLayer(nodes)
+        nodes.setEditorWidgetSetup(
+            4, 
+            QgsEditorWidgetSetup(
+                'ValueMap',
+                {'map': [{'Decommissioned': 'decommissioned'}, {'Inactive': 'inactive'}, {'Operational': 'operational'}, {'Planned': 'planned'}, {'Proposed': 'proposed'}, {'Under construction': 'underConstruction'}]}
+            )
+        )
 
         spans = QgsVectorLayer(filename+"|layername=spans", "Spans",  "ogr")
         QgsProject.instance().addMapLayer(spans)
