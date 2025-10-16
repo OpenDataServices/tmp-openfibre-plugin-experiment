@@ -40,23 +40,44 @@ class BasemapLoaderPlugin:
         # Copy template to desired location
         shutil.copyfile(os.path.join(plugin_dir, "template.gpkg"), filename)
         # Add vector Layers for it 
-        vector_layers = [
-            QgsVectorLayer(filename+"|layername=networks", "Networks",  "ogr"),
-            QgsVectorLayer(filename+"|layername=nodes", "Nodes",  "ogr"),
-            QgsVectorLayer(filename+"|layername=spans", "Spans",  "ogr"),
-            QgsVectorLayer(filename+"|layername=phases", "Phases",  "ogr"),
-            QgsVectorLayer(filename+"|layername=spans_networkProviders", "spans_networkProviders",  "ogr"),
-            QgsVectorLayer(filename+"|layername=phases_funders", "phases_funders",  "ogr"),
-            QgsVectorLayer(filename+"|layername=organisations", "organisations",  "ogr"),
-            QgsVectorLayer(filename+"|layername=nodes_networkProviders", "nodes_networkProviders",  "ogr"),
-            QgsVectorLayer(filename+"|layername=nodes_internationalConnections", "nodes_internationalConnections",  "ogr"),
-            QgsVectorLayer(filename+"|layername=links", "links",  "ogr"),
-            QgsVectorLayer(filename+"|layername=contracts_relatedPhases", "contracts_relatedPhases",  "ogr"),
-            QgsVectorLayer(filename+"|layername=contracts_documents", "contracts_documents",  "ogr"),
-            QgsVectorLayer(filename+"|layername=contracts", "contracts",  "ogr"),
-        ]
-        for vector_layer in vector_layers:
-            QgsProject.instance().addMapLayer(vector_layer)
+        networks = QgsVectorLayer(filename+"|layername=networks", "Networks",  "ogr")
+        QgsProject.instance().addMapLayer(networks)
+
+        nodes = QgsVectorLayer(filename+"|layername=nodes", "Nodes",  "ogr")
+        QgsProject.instance().addMapLayer(nodes)
+
+        spans = QgsVectorLayer(filename+"|layername=spans", "Spans",  "ogr")
+        QgsProject.instance().addMapLayer(spans)
+
+        phases = QgsVectorLayer(filename+"|layername=phases", "Phases",  "ogr")
+        QgsProject.instance().addMapLayer(phases)
+
+        spans_networkProviders = QgsVectorLayer(filename+"|layername=spans_networkProviders", "spans_networkProviders",  "ogr")
+        QgsProject.instance().addMapLayer(spans_networkProviders)
+
+        phases_funders = QgsVectorLayer(filename+"|layername=phases_funders", "phases_funders",  "ogr")
+        QgsProject.instance().addMapLayer(phases_funders)
+
+        organisations = QgsVectorLayer(filename+"|layername=organisations", "organisations",  "ogr")
+        QgsProject.instance().addMapLayer(organisations)
+
+        nodes_networkProviders = QgsVectorLayer(filename+"|layername=nodes_networkProviders", "nodes_networkProviders",  "ogr")
+        QgsProject.instance().addMapLayer(nodes_networkProviders)
+
+        nodes_internationalConnections = QgsVectorLayer(filename+"|layername=nodes_internationalConnections", "nodes_internationalConnections",  "ogr")
+        QgsProject.instance().addMapLayer(nodes_internationalConnections)
+
+        links = QgsVectorLayer(filename+"|layername=links", "links",  "ogr")
+        QgsProject.instance().addMapLayer(links)
+
+        contracts_relatedPhases = QgsVectorLayer(filename+"|layername=contracts_relatedPhases", "contracts_relatedPhases",  "ogr")
+        QgsProject.instance().addMapLayer(contracts_relatedPhases)
+
+        contracts_documents = QgsVectorLayer(filename+"|layername=contracts_documents", "contracts_documents",  "ogr")
+        QgsProject.instance().addMapLayer(contracts_documents)
+
+        contracts = QgsVectorLayer(filename+"|layername=contracts", "contracts",  "ogr")
+        QgsProject.instance().addMapLayer(contracts)
     
     def export_json(self):
         filename_details = QFileDialog.getSaveFileName(None, "Select output file ","", '*.json')
