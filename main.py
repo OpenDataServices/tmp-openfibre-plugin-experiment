@@ -75,6 +75,7 @@ class BasemapLoaderPlugin:
                     for f_k, f_v in f.attributeMap().items():
                         # TODO actually have to turn this into the right structures
                         out[f_k] = str(f_v)
+                    # TODO save f.geometry().asJson() for nodes and spans too
         # Save JSON
         with open(filename, "w") as fp:
             json.dump(out, fp, indent=2)
