@@ -68,9 +68,13 @@ class BasemapLoaderPlugin:
         # Make JSON
         out = {}
         for k,v in QgsProject.instance().mapLayers().items():
-            print(v)
-            # TODO
-        
+            if isinstance(v, QgsVectorLayer):
+                print("LAYER {}".format(k))
+                for f in v.getFeatures():
+                    print("FEATURE")
+                    for f_k, f_v in f.attributeMap().items():
+                        # TODO actually have to turn this into the right structures
+                        out[f_k] = str(f_v)
         # Save JSON
         with open(filename, "w") as fp:
             json.dump(out, fp, indent=2)
