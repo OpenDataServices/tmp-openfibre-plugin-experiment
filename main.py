@@ -3,7 +3,7 @@ import json
 from qgis.PyQt.QtWidgets import QAction, QFileDialog
 from qgis.PyQt.QtGui import QIcon
 import shutil
-from qgis.core import QgsVectorLayer, QgsProject, QgsEditorWidgetSetup
+from qgis.core import QgsVectorLayer, QgsProject, QgsEditorWidgetSetup, QgsVectorLayer, QgsLayerTreeLayer
 
 plugin_dir = os.path.dirname(__file__)
 
@@ -39,12 +39,18 @@ class BasemapLoaderPlugin:
         filename = filename_details[0] + ".gpkg"
         # Copy template to desired location
         shutil.copyfile(os.path.join(plugin_dir, "template.gpkg"), filename)
+        # Create a group
+        groupName="Open Fibre"
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.addGroup(groupName)
         # Add vector Layers for it 
         networks = QgsVectorLayer(filename+"|layername=networks", "Networks",  "ogr")
-        QgsProject.instance().addMapLayer(networks)
+        group.insertChildNode(-1, QgsLayerTreeLayer(networks))
+        QgsProject.instance().addMapLayer(networks, False)
 
         nodes = QgsVectorLayer(filename+"|layername=nodes", "Nodes",  "ogr")
-        QgsProject.instance().addMapLayer(nodes)
+        group.insertChildNode(-1, QgsLayerTreeLayer(nodes))
+        QgsProject.instance().addMapLayer(nodes, False)
         nodes.setEditorWidgetSetup(
             4, 
             QgsEditorWidgetSetup(
@@ -54,37 +60,48 @@ class BasemapLoaderPlugin:
         )
 
         spans = QgsVectorLayer(filename+"|layername=spans", "Spans",  "ogr")
-        QgsProject.instance().addMapLayer(spans)
+        group.insertChildNode(-1, QgsLayerTreeLayer(spans))
+        QgsProject.instance().addMapLayer(spans, False)
 
         phases = QgsVectorLayer(filename+"|layername=phases", "Phases",  "ogr")
-        QgsProject.instance().addMapLayer(phases)
+        group.insertChildNode(-1, QgsLayerTreeLayer(phases))
+        QgsProject.instance().addMapLayer(phases, False)
 
         spans_networkProviders = QgsVectorLayer(filename+"|layername=spans_networkProviders", "spans_networkProviders",  "ogr")
-        QgsProject.instance().addMapLayer(spans_networkProviders)
+        group.insertChildNode(-1, QgsLayerTreeLayer(spans_networkProviders))
+        QgsProject.instance().addMapLayer(spans_networkProviders, False)
 
         phases_funders = QgsVectorLayer(filename+"|layername=phases_funders", "phases_funders",  "ogr")
-        QgsProject.instance().addMapLayer(phases_funders)
+        group.insertChildNode(-1, QgsLayerTreeLayer(phases_funders))
+        QgsProject.instance().addMapLayer(phases_funders, False)
 
         organisations = QgsVectorLayer(filename+"|layername=organisations", "organisations",  "ogr")
-        QgsProject.instance().addMapLayer(organisations)
+        group.insertChildNode(-1, QgsLayerTreeLayer(organisations))
+        QgsProject.instance().addMapLayer(organisations, False)
 
         nodes_networkProviders = QgsVectorLayer(filename+"|layername=nodes_networkProviders", "nodes_networkProviders",  "ogr")
-        QgsProject.instance().addMapLayer(nodes_networkProviders)
+        group.insertChildNode(-1, QgsLayerTreeLayer(nodes_networkProviders))
+        QgsProject.instance().addMapLayer(nodes_networkProviders, False)
 
         nodes_internationalConnections = QgsVectorLayer(filename+"|layername=nodes_internationalConnections", "nodes_internationalConnections",  "ogr")
-        QgsProject.instance().addMapLayer(nodes_internationalConnections)
+        group.insertChildNode(-1, QgsLayerTreeLayer(nodes_internationalConnections))
+        QgsProject.instance().addMapLayer(nodes_internationalConnections, False)
 
         links = QgsVectorLayer(filename+"|layername=links", "links",  "ogr")
-        QgsProject.instance().addMapLayer(links)
+        group.insertChildNode(-1, QgsLayerTreeLayer(links))
+        QgsProject.instance().addMapLayer(links, False)
 
         contracts_relatedPhases = QgsVectorLayer(filename+"|layername=contracts_relatedPhases", "contracts_relatedPhases",  "ogr")
-        QgsProject.instance().addMapLayer(contracts_relatedPhases)
+        group.insertChildNode(-1, QgsLayerTreeLayer(contracts_relatedPhases))
+        QgsProject.instance().addMapLayer(contracts_relatedPhases, False)
 
         contracts_documents = QgsVectorLayer(filename+"|layername=contracts_documents", "contracts_documents",  "ogr")
-        QgsProject.instance().addMapLayer(contracts_documents)
+        group.insertChildNode(-1, QgsLayerTreeLayer(contracts_documents))
+        QgsProject.instance().addMapLayer(contracts_documents, False)
 
         contracts = QgsVectorLayer(filename+"|layername=contracts", "contracts",  "ogr")
-        QgsProject.instance().addMapLayer(contracts)
+        group.insertChildNode(-1, QgsLayerTreeLayer(contracts))
+        QgsProject.instance().addMapLayer(contracts, False)
     
     def export_json(self):
         filename_details = QFileDialog.getSaveFileName(None, "Select output file ","", '*.json')
