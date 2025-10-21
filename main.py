@@ -33,7 +33,11 @@ class BasemapLoaderPlugin:
         self.iface.removeToolBarIcon(self.action_export_json)
         del self.action_export_json
         
-    def add_layers(self):
+    def add_layers(self): 
+        if QgsProject.instance().crs().authid() not in [ 'OGC:CRS84', 'EPSG:4326', 'EPSG:3857']:
+            self.iface.messageBar().pushMessage('Can only use OFDS with projects in the OGC:CRS84 oordinate reference system (CRS).')
+            return
+
         filename_details = QFileDialog.getSaveFileName(None, "Select output file ","", '*.gpkg')
         # catch cancel being pressed
         if not filename_details[0]:
